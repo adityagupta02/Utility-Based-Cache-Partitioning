@@ -51,6 +51,7 @@ class BLOCK {
     };
 };
 
+
 // DRAM CACHE BLOCK
 class DRAM_ARRAY {
   public:

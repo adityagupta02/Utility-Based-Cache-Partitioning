@@ -1,6 +1,150 @@
 #include "cache.h"
 #include "set.h"
 
+class ATD {
+  public:
+    uint64_t tag;
+    uint32_t lru;
+
+    ATD() {		// Constructor for ATD
+        tag = 0;
+        lru = 0;
+    };
+};
+
+ATD arr0[32][LLC_WAY];		// ATD for core 1
+ATD arr1[32][LLC_WAY];	        // ATD for core 2
+
+int util_core0[LLC_WAY];	// Array of counters to count number of hits at each LRU position in core 0
+int util_core1[LLC_WAY];	// Array of counters to count number of hits at each LRU position in core 1
+
+void miss_llc(const PACKET *packet, uint32_t set, uint32_t cpu){
+  if(cpu == 0){
+    int mx_lru = -1;
+    int w = -1;
+    for(int i = 0; i < LLC_WAY; i++){
+      if(mx_lru < arr0[set][i].lru){   //finding the lru position in ATD to eliminate ans storing the corresponding way
+        mx_lru = arr0[set][i].lru;
+        w=i;
+      }
+    }
+    if(mx_lru<15){                  //If the maximum age is less than 15 than the set is empty and we incrementing the age of each block in the set
+      arr0[set][w].lru = 0;         
+      arr0[set][w].tag = packet->address;
+      for(int j = 0; j < LLC_WAY; j++){
+        if(arr0[set][j].lru < mx_lru){
+          arr0[set][j].lru++;
+        }
+      }
+      return;
+    }
+    for(int i = 0; i < LLC_WAY; i++){        //If the maximum age equal to 15 than the set is full we are then incrementing the age of each block in the set by 1 and inserting in MRU
+      if(arr0[set][i].lru == LLC_WAY-1){
+        arr0[set][i].lru = 0;
+        arr0[set][i].tag = packet->address;
+        for(int j = 0; j < LLC_WAY; j++){
+          if(arr0[set][j].lru < LLC_WAY-1){
+            arr0[set][j].lru++;
+          }
+        }
+      }
+    }
+  }
+  else if(cpu == 1){
+    int mx_lru = -1;
+    int w = -1;
+    for(int i=0;i<LLC_WAY;i++){
+      if(mx_lru < arr0[set][i].lru){  //finding the lru position in ATD to eliminate ans storing the corresponding way
+        mx_lru = arr0[set][i].lru;
+        w = i;
+      }
+    }
+    if(mx_lru < 15){                //If the maximum age is less than 15 than the set is empty and we incrementing the age of each block in the set
+      arr1[set][w].lru = 0;
+      arr1[set][w].tag = packet->address;
+      for(int j = 0; j < LLC_WAY; j++){
+        if(arr1[set][j].lru < mx_lru){
+          arr1[set][j].lru++;
+        }
+      }
+      return;
+    }
+    for(int i = 0; i < LLC_WAY; i++){      //If the maximum age equal to 15 than the set is full we are then incrementing the age of each block in the set by 1 and inserting in MRU
+      if(arr1[set][i].lru == LLC_WAY-1){
+        arr1[set][i].lru = 0;
+        arr1[set][i].tag = packet->address;
+        for(int j = 0; j < LLC_WAY; j++){
+          if(arr1[set][j].lru < LLC_WAY-1){
+            arr1[set][j].lru++;
+          }
+        }
+      }
+    }
+  }
+}
+
+void atd_llc(uint32_t set, const PACKET *packet, uint32_t cpu){
+  if(set >= 32){					// Sampled 32 sets 
+    return;
+  }
+  if(cpu == 0){
+    int flag = 0;
+    for(int i = 0; i < LLC_WAY; i++){
+      if(packet->address == arr0[set][i].tag){		// Checking for hit
+        util_core0[arr0[set][i].lru]++;
+        arr0[set][i].lru = 0;				// Promoting to MRU in case of hit
+        arr0[set][i].tag = packet->address;
+       
+        for(int j=0;j<LLC_WAY;j++){
+          if(arr0[set][j].lru < arr0[set][i].lru){
+            arr0[set][j].lru++;				// Incrementing LRU value of other ways
+          }
+        }
+        flag=1;
+        break;
+      }
+    }
+    if(flag == 0){
+      miss_llc(packet, set, cpu);			// Calling miss_llc in case of miss in LLC
+    }
+  }
+  else if(cpu == 1){
+    int flag = 0;
+    for(int i = 0; i < LLC_WAY; i++){
+      if(packet->address == arr1[set][i].tag){		// Checking for hit
+        util_core1[arr1[set][i].lru]++;
+        arr1[set][i].lru = 0;				// Promoting to MRU in case of hit
+        arr1[set][i].tag = packet->address;
+        for(int j = 0; j < LLC_WAY; j++){
+          if(arr1[set][j].lru < arr1[set][i].lru){
+            arr1[set][j].lru++;				// Incrementing LRU value of other ways
+          }
+        }
+        flag = 1;
+        break;
+      }
+    }
+    if(flag == 0){
+      miss_llc(packet, set, cpu);		// Calling miss_llc in case of miss in LLC
+    }
+
+  }
+
+}
+
+
+int ucp_par(){			// Function to find best partition
+  int mx = -1;
+  int x;
+  for(int i=0;i<=14;i++){
+    if(util_core0[i]+util_core1[LLC_WAY-2-i]>mx){
+      x = i;
+      mx=util_core0[i]+util_core1[LLC_WAY-2-i];
+    }
+  }
+  return x;		// Returning best partition
+}
+
 uint64_t l2pf_access = 0;
 
 void CACHE::handle_fill()
@@ -239,6 +383,9 @@ void CACHE::handle_writeback()
         // access cache
         uint32_t set = get_set(WQ.entry[index].address);
         int way = check_hit(&WQ.entry[index]);
+        if(cache_type == IS_LLC){
+          atd_llc(set, &WQ.entry[index], writeback_cpu);
+        }
         
         if (way >= 0) { // writeback hit (or RFO hit for L1D)
 
@@ -537,6 +684,9 @@ void CACHE::handle_read()
             // access cache
             uint32_t set = get_set(RQ.entry[index].address);
             int way = check_hit(&RQ.entry[index]);
+            if(cache_type == IS_LLC){
+              atd_llc(set, &RQ.entry[index], read_cpu);
+            }
             
             if (way >= 0) { // read hit
 
@@ -1121,6 +1271,9 @@ int CACHE::check_hit(PACKET *packet)
 {
     uint32_t set = get_set(packet->address);
     int match_way = -1;
+
+    atd_llc(set, packet, packet->cpu);
+
 
     if (NUM_SET < set) {
         cerr << "[" << NAME << "_ERROR] " << __func__ << " invalid set index: " << set << " NUM_SET: " << NUM_SET;

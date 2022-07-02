@@ -21,6 +21,6 @@ class UNCORE {
     UNCORE(); 
 };
 
-extern UNCORE uncore;
+extern UNCORE uncore;  //declaring uncore as extern
 
 #endif

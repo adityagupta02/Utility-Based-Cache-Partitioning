@@ -4,6 +4,10 @@
 #include "ooo_cpu.h"
 #include "uncore.h"
 #include <fstream>
+#include "cache.h"
+
+int ucp_par();
+
 
 uint8_t warmup_complete[NUM_CPUS], 
         simulation_complete[NUM_CPUS], 
@@ -797,7 +801,9 @@ int main(int argc, char** argv)
                  elapsed_hour = elapsed_minute / 60;
         elapsed_minute -= elapsed_hour*60;
         elapsed_second -= (elapsed_hour*3600 + elapsed_minute*60);
-
+        if(current_core_cycle[0] % 5000000 <=10&&current_core_cycle[0]>=5000000){  // Checking optimal partition after every 5 million cycles 
+            uncore.LLC.par = ucp_par();
+        }
         for (int i=0; i<NUM_CPUS; i++) {
             // proceed one cycle
             current_core_cycle[i]++;
