@@ -4,7 +4,7 @@
 <<<<<<< HEAD
 #include "cache.h"
 
-int ucp_par();
+    int ucp_par();
 
 =======
 #include <functional>
@@ -24,8 +24,7 @@ int ucp_par();
 #include "tracereader.h"
 #include "vmem.h"
 
-uint8_t warmup_complete[NUM_CPUS] = {}, simulation_complete[NUM_CPUS] = {}, all_warmup_complete = 0, all_simulation_complete = 0,
-        MAX_INSTR_DESTINATIONS = NUM_INSTR_DESTINATIONS, knob_cloudsuite = 0, knob_low_bandwidth = 0;
+    uint8_t warmup_complete[NUM_CPUS] = {}, simulation_complete[NUM_CPUS] = {}, all_warmup_complete = 0, all_simulation_complete = 0, MAX_INSTR_DESTINATIONS = NUM_INSTR_DESTINATIONS, knob_cloudsuite = 0, knob_low_bandwidth = 0;
 
 uint64_t warmup_instructions = 1000000, simulation_instructions = 10000000;
 
@@ -508,280 +507,277 @@ int main(int argc, char** argv)
     (*it)->impl_prefetcher_final_stats();
 
 <<<<<<< HEAD
-        // ROB
-        ooo_cpu[i].ROB.cpu = i;
+  // ROB
+  ooo_cpu[i].ROB.cpu = i;
 
-        // BRANCH PREDICTOR
-        ooo_cpu[i].initialize_branch_predictor();
+  // BRANCH PREDICTOR
+  ooo_cpu[i].initialize_branch_predictor();
 
-        // TLBs
-        ooo_cpu[i].ITLB.cpu = i;
-        ooo_cpu[i].ITLB.cache_type = IS_ITLB;
-	ooo_cpu[i].ITLB.MAX_READ = 2;
-        ooo_cpu[i].ITLB.fill_level = FILL_L1;
-        ooo_cpu[i].ITLB.extra_interface = &ooo_cpu[i].L1I;
-        ooo_cpu[i].ITLB.lower_level = &ooo_cpu[i].STLB; 
+  // TLBs
+  ooo_cpu[i].ITLB.cpu = i;
+  ooo_cpu[i].ITLB.cache_type = IS_ITLB;
+  ooo_cpu[i].ITLB.MAX_READ = 2;
+  ooo_cpu[i].ITLB.fill_level = FILL_L1;
+  ooo_cpu[i].ITLB.extra_interface = &ooo_cpu[i].L1I;
+  ooo_cpu[i].ITLB.lower_level = &ooo_cpu[i].STLB;
 
-        ooo_cpu[i].DTLB.cpu = i;
-        ooo_cpu[i].DTLB.cache_type = IS_DTLB;
-        //ooo_cpu[i].DTLB.MAX_READ = (2 > MAX_READ_PER_CYCLE) ? MAX_READ_PER_CYCLE : 2;
-        ooo_cpu[i].DTLB.MAX_READ = 2;
-        ooo_cpu[i].DTLB.fill_level = FILL_L1;
-        ooo_cpu[i].DTLB.extra_interface = &ooo_cpu[i].L1D;
-        ooo_cpu[i].DTLB.lower_level = &ooo_cpu[i].STLB;
+  ooo_cpu[i].DTLB.cpu = i;
+  ooo_cpu[i].DTLB.cache_type = IS_DTLB;
+  // ooo_cpu[i].DTLB.MAX_READ = (2 > MAX_READ_PER_CYCLE) ? MAX_READ_PER_CYCLE : 2;
+  ooo_cpu[i].DTLB.MAX_READ = 2;
+  ooo_cpu[i].DTLB.fill_level = FILL_L1;
+  ooo_cpu[i].DTLB.extra_interface = &ooo_cpu[i].L1D;
+  ooo_cpu[i].DTLB.lower_level = &ooo_cpu[i].STLB;
 
-        ooo_cpu[i].STLB.cpu = i;
-        ooo_cpu[i].STLB.cache_type = IS_STLB;
-        ooo_cpu[i].STLB.MAX_READ = 1;
-        ooo_cpu[i].STLB.fill_level = FILL_L2;
-        ooo_cpu[i].STLB.upper_level_icache[i] = &ooo_cpu[i].ITLB;
-        ooo_cpu[i].STLB.upper_level_dcache[i] = &ooo_cpu[i].DTLB;
+  ooo_cpu[i].STLB.cpu = i;
+  ooo_cpu[i].STLB.cache_type = IS_STLB;
+  ooo_cpu[i].STLB.MAX_READ = 1;
+  ooo_cpu[i].STLB.fill_level = FILL_L2;
+  ooo_cpu[i].STLB.upper_level_icache[i] = &ooo_cpu[i].ITLB;
+  ooo_cpu[i].STLB.upper_level_dcache[i] = &ooo_cpu[i].DTLB;
 
-        // PRIVATE CACHE
-        ooo_cpu[i].L1I.cpu = i;
-        ooo_cpu[i].L1I.cache_type = IS_L1I;
-        //ooo_cpu[i].L1I.MAX_READ = (FETCH_WIDTH > MAX_READ_PER_CYCLE) ? MAX_READ_PER_CYCLE : FETCH_WIDTH;
-        ooo_cpu[i].L1I.MAX_READ = 2;
-        ooo_cpu[i].L1I.fill_level = FILL_L1;
-        ooo_cpu[i].L1I.lower_level = &ooo_cpu[i].L2C; 
-        ooo_cpu[i].l1i_prefetcher_initialize();
-	ooo_cpu[i].L1I.l1i_prefetcher_cache_operate = cpu_l1i_prefetcher_cache_operate;
-	ooo_cpu[i].L1I.l1i_prefetcher_cache_fill = cpu_l1i_prefetcher_cache_fill;
+  // PRIVATE CACHE
+  ooo_cpu[i].L1I.cpu = i;
+  ooo_cpu[i].L1I.cache_type = IS_L1I;
+  // ooo_cpu[i].L1I.MAX_READ = (FETCH_WIDTH > MAX_READ_PER_CYCLE) ? MAX_READ_PER_CYCLE : FETCH_WIDTH;
+  ooo_cpu[i].L1I.MAX_READ = 2;
+  ooo_cpu[i].L1I.fill_level = FILL_L1;
+  ooo_cpu[i].L1I.lower_level = &ooo_cpu[i].L2C;
+  ooo_cpu[i].l1i_prefetcher_initialize();
+  ooo_cpu[i].L1I.l1i_prefetcher_cache_operate = cpu_l1i_prefetcher_cache_operate;
+  ooo_cpu[i].L1I.l1i_prefetcher_cache_fill = cpu_l1i_prefetcher_cache_fill;
 
-        ooo_cpu[i].L1D.cpu = i;
-        ooo_cpu[i].L1D.cache_type = IS_L1D;
-        ooo_cpu[i].L1D.MAX_READ = (2 > MAX_READ_PER_CYCLE) ? MAX_READ_PER_CYCLE : 2;
-        ooo_cpu[i].L1D.fill_level = FILL_L1;
-        ooo_cpu[i].L1D.lower_level = &ooo_cpu[i].L2C; 
-        ooo_cpu[i].L1D.l1d_prefetcher_initialize();
+  ooo_cpu[i].L1D.cpu = i;
+  ooo_cpu[i].L1D.cache_type = IS_L1D;
+  ooo_cpu[i].L1D.MAX_READ = (2 > MAX_READ_PER_CYCLE) ? MAX_READ_PER_CYCLE : 2;
+  ooo_cpu[i].L1D.fill_level = FILL_L1;
+  ooo_cpu[i].L1D.lower_level = &ooo_cpu[i].L2C;
+  ooo_cpu[i].L1D.l1d_prefetcher_initialize();
 
-        ooo_cpu[i].L2C.cpu = i;
-        ooo_cpu[i].L2C.cache_type = IS_L2C;
-        ooo_cpu[i].L2C.fill_level = FILL_L2;
-        ooo_cpu[i].L2C.upper_level_icache[i] = &ooo_cpu[i].L1I;
-        ooo_cpu[i].L2C.upper_level_dcache[i] = &ooo_cpu[i].L1D;
-        ooo_cpu[i].L2C.lower_level = &uncore.LLC;
-        ooo_cpu[i].L2C.l2c_prefetcher_initialize();
+  ooo_cpu[i].L2C.cpu = i;
+  ooo_cpu[i].L2C.cache_type = IS_L2C;
+  ooo_cpu[i].L2C.fill_level = FILL_L2;
+  ooo_cpu[i].L2C.upper_level_icache[i] = &ooo_cpu[i].L1I;
+  ooo_cpu[i].L2C.upper_level_dcache[i] = &ooo_cpu[i].L1D;
+  ooo_cpu[i].L2C.lower_level = &uncore.LLC;
+  ooo_cpu[i].L2C.l2c_prefetcher_initialize();
 
-        // SHARED CACHE
-        uncore.LLC.cache_type = IS_LLC;
-        uncore.LLC.fill_level = FILL_LLC;
-        uncore.LLC.MAX_READ = NUM_CPUS;
-        uncore.LLC.upper_level_icache[i] = &ooo_cpu[i].L2C;
-        uncore.LLC.upper_level_dcache[i] = &ooo_cpu[i].L2C;
-        uncore.LLC.lower_level = &uncore.DRAM;
+  // SHARED CACHE
+  uncore.LLC.cache_type = IS_LLC;
+  uncore.LLC.fill_level = FILL_LLC;
+  uncore.LLC.MAX_READ = NUM_CPUS;
+  uncore.LLC.upper_level_icache[i] = &ooo_cpu[i].L2C;
+  uncore.LLC.upper_level_dcache[i] = &ooo_cpu[i].L2C;
+  uncore.LLC.lower_level = &uncore.DRAM;
 
-        // OFF-CHIP DRAM
-        uncore.DRAM.fill_level = FILL_DRAM;
-        uncore.DRAM.upper_level_icache[i] = &uncore.LLC;
-        uncore.DRAM.upper_level_dcache[i] = &uncore.LLC;
-        for (uint32_t i=0; i<DRAM_CHANNELS; i++) {
-            uncore.DRAM.RQ[i].is_RQ = 1;
-            uncore.DRAM.WQ[i].is_WQ = 1;
-        }
+  // OFF-CHIP DRAM
+  uncore.DRAM.fill_level = FILL_DRAM;
+  uncore.DRAM.upper_level_icache[i] = &uncore.LLC;
+  uncore.DRAM.upper_level_dcache[i] = &uncore.LLC;
+  for (uint32_t i = 0; i < DRAM_CHANNELS; i++) {
+    uncore.DRAM.RQ[i].is_RQ = 1;
+    uncore.DRAM.WQ[i].is_WQ = 1;
+  }
 
-        warmup_complete[i] = 0;
-        //all_warmup_complete = NUM_CPUS;
-        simulation_complete[i] = 0;
-        current_core_cycle[i] = 0;
-        stall_cycle[i] = 0;
-        
-        previous_ppage = 0;
-        num_adjacent_page = 0;
-        num_cl[i] = 0;
-        allocated_pages = 0;
-        num_page[i] = 0;
-        minor_fault[i] = 0;
-        major_fault[i] = 0;
+  warmup_complete[i] = 0;
+  // all_warmup_complete = NUM_CPUS;
+  simulation_complete[i] = 0;
+  current_core_cycle[i] = 0;
+  stall_cycle[i] = 0;
+
+  previous_ppage = 0;
+  num_adjacent_page = 0;
+  num_cl[i] = 0;
+  allocated_pages = 0;
+  num_page[i] = 0;
+  minor_fault[i] = 0;
+  major_fault[i] = 0;
+}
+
+uncore.LLC.llc_initialize_replacement();
+uncore.LLC.llc_prefetcher_initialize();
+
+// simulation entry point
+start_time = time(NULL);
+uint8_t run_simulation = 1;
+while (run_simulation) {
+
+  uint64_t elapsed_second = (uint64_t)(time(NULL) - start_time), elapsed_minute = elapsed_second / 60, elapsed_hour = elapsed_minute / 60;
+  elapsed_minute -= elapsed_hour * 60;
+  elapsed_second -= (elapsed_hour * 3600 + elapsed_minute * 60);
+  if (current_core_cycle[0] % 5000000 <= 10 && current_core_cycle[0] >= 5000000) { // Checking optimal partition after every 5 million cycles
+    uncore.LLC.par = ucp_par();
+  }
+  for (int i = 0; i < NUM_CPUS; i++) {
+    // proceed one cycle
+    current_core_cycle[i]++;
+
+    // cout << "Trying to process instr_id: " << ooo_cpu[i].instr_unique_id << " fetch_stall: " << +ooo_cpu[i].fetch_stall;
+    // cout << " stall_cycle: " << stall_cycle[i] << " current: " << current_core_cycle[i] << endl;
+
+    // core might be stalled due to page fault or branch misprediction
+    if (stall_cycle[i] <= current_core_cycle[i]) {
+
+      // retire
+      if ((ooo_cpu[i].ROB.entry[ooo_cpu[i].ROB.head].executed == COMPLETED) && (ooo_cpu[i].ROB.entry[ooo_cpu[i].ROB.head].event_cycle <= current_core_cycle[i]))
+        ooo_cpu[i].retire_rob();
+
+      // complete
+      ooo_cpu[i].update_rob();
+
+      // schedule
+      uint32_t schedule_index = ooo_cpu[i].ROB.next_schedule;
+      if ((ooo_cpu[i].ROB.entry[schedule_index].scheduled == 0) && (ooo_cpu[i].ROB.entry[schedule_index].event_cycle <= current_core_cycle[i]))
+        ooo_cpu[i].schedule_instruction();
+      // execute
+      ooo_cpu[i].execute_instruction();
+
+      ooo_cpu[i].update_rob();
+
+      // memory operation
+      ooo_cpu[i].schedule_memory_instruction();
+      ooo_cpu[i].execute_memory_instruction();
+
+      ooo_cpu[i].update_rob();
+
+      // decode
+      if (ooo_cpu[i].DECODE_BUFFER.occupancy > 0) {
+        ooo_cpu[i].decode_and_dispatch();
+      }
+
+      // fetch
+      ooo_cpu[i].fetch_instruction();
+
+      // read from trace
+      if ((ooo_cpu[i].IFETCH_BUFFER.occupancy < ooo_cpu[i].IFETCH_BUFFER.SIZE) && (ooo_cpu[i].fetch_stall == 0)) {
+        ooo_cpu[i].read_from_trace();
+      }
     }
 
-    uncore.LLC.llc_initialize_replacement();
-    uncore.LLC.llc_prefetcher_initialize();
+    // heartbeat information
+    if (show_heartbeat && (ooo_cpu[i].num_retired >= ooo_cpu[i].next_print_instruction)) {
+      float cumulative_ipc;
+      if (warmup_complete[i])
+        cumulative_ipc = (1.0 * (ooo_cpu[i].num_retired - ooo_cpu[i].begin_sim_instr)) / (current_core_cycle[i] - ooo_cpu[i].begin_sim_cycle);
+      else
+        cumulative_ipc = (1.0 * ooo_cpu[i].num_retired) / current_core_cycle[i];
+      float heartbeat_ipc = (1.0 * ooo_cpu[i].num_retired - ooo_cpu[i].last_sim_instr) / (current_core_cycle[i] - ooo_cpu[i].last_sim_cycle);
 
-    // simulation entry point
-    start_time = time(NULL);
-    uint8_t run_simulation = 1;
-    while (run_simulation) {
+      cout << "Heartbeat CPU " << i << " instructions: " << ooo_cpu[i].num_retired << " cycles: " << current_core_cycle[i];
+      cout << " heartbeat IPC: " << heartbeat_ipc << " cumulative IPC: " << cumulative_ipc;
+      cout << " (Simulation time: " << elapsed_hour << " hr " << elapsed_minute << " min " << elapsed_second << " sec) " << endl;
+      ooo_cpu[i].next_print_instruction += STAT_PRINTING_PERIOD;
 
-        uint64_t elapsed_second = (uint64_t)(time(NULL) - start_time),
-                 elapsed_minute = elapsed_second / 60,
-                 elapsed_hour = elapsed_minute / 60;
-        elapsed_minute -= elapsed_hour*60;
-        elapsed_second -= (elapsed_hour*3600 + elapsed_minute*60);
-        if(current_core_cycle[0] % 5000000 <=10&&current_core_cycle[0]>=5000000){  // Checking optimal partition after every 5 million cycles 
-            uncore.LLC.par = ucp_par();
-        }
-        for (int i=0; i<NUM_CPUS; i++) {
-            // proceed one cycle
-            current_core_cycle[i]++;
-
-            //cout << "Trying to process instr_id: " << ooo_cpu[i].instr_unique_id << " fetch_stall: " << +ooo_cpu[i].fetch_stall;
-            //cout << " stall_cycle: " << stall_cycle[i] << " current: " << current_core_cycle[i] << endl;
-
-            // core might be stalled due to page fault or branch misprediction
-            if (stall_cycle[i] <= current_core_cycle[i]) {
-
-	      // retire
-	      if ((ooo_cpu[i].ROB.entry[ooo_cpu[i].ROB.head].executed == COMPLETED) && (ooo_cpu[i].ROB.entry[ooo_cpu[i].ROB.head].event_cycle <= current_core_cycle[i]))
-		ooo_cpu[i].retire_rob();
-
-	      // complete 
-	      ooo_cpu[i].update_rob();
-
-	      // schedule
-	      uint32_t schedule_index = ooo_cpu[i].ROB.next_schedule;
-	      if ((ooo_cpu[i].ROB.entry[schedule_index].scheduled == 0) && (ooo_cpu[i].ROB.entry[schedule_index].event_cycle <= current_core_cycle[i]))
-		ooo_cpu[i].schedule_instruction();
-	      // execute
-	      ooo_cpu[i].execute_instruction();
-
-	      ooo_cpu[i].update_rob();
-
-	      // memory operation
-	      ooo_cpu[i].schedule_memory_instruction();
-	      ooo_cpu[i].execute_memory_instruction();
-
-	      ooo_cpu[i].update_rob();
-
-	      // decode
-	      if(ooo_cpu[i].DECODE_BUFFER.occupancy > 0)
-		{
-		  ooo_cpu[i].decode_and_dispatch();
-		}
-	      
-	      // fetch
-	      ooo_cpu[i].fetch_instruction();
-	      
-	      // read from trace
-	      if ((ooo_cpu[i].IFETCH_BUFFER.occupancy < ooo_cpu[i].IFETCH_BUFFER.SIZE) && (ooo_cpu[i].fetch_stall == 0))
-		{
-		  ooo_cpu[i].read_from_trace();
-		}
-	    }
-
-            // heartbeat information
-            if (show_heartbeat && (ooo_cpu[i].num_retired >= ooo_cpu[i].next_print_instruction)) {
-                float cumulative_ipc;
-                if (warmup_complete[i])
-                    cumulative_ipc = (1.0*(ooo_cpu[i].num_retired - ooo_cpu[i].begin_sim_instr)) / (current_core_cycle[i] - ooo_cpu[i].begin_sim_cycle);
-                else
-                    cumulative_ipc = (1.0*ooo_cpu[i].num_retired) / current_core_cycle[i];
-                float heartbeat_ipc = (1.0*ooo_cpu[i].num_retired - ooo_cpu[i].last_sim_instr) / (current_core_cycle[i] - ooo_cpu[i].last_sim_cycle);
-
-                cout << "Heartbeat CPU " << i << " instructions: " << ooo_cpu[i].num_retired << " cycles: " << current_core_cycle[i];
-                cout << " heartbeat IPC: " << heartbeat_ipc << " cumulative IPC: " << cumulative_ipc; 
-                cout << " (Simulation time: " << elapsed_hour << " hr " << elapsed_minute << " min " << elapsed_second << " sec) " << endl;
-                ooo_cpu[i].next_print_instruction += STAT_PRINTING_PERIOD;
-
-                ooo_cpu[i].last_sim_instr = ooo_cpu[i].num_retired;
-                ooo_cpu[i].last_sim_cycle = current_core_cycle[i];
-            }
-
-            // check for deadlock
-            if (ooo_cpu[i].ROB.entry[ooo_cpu[i].ROB.head].ip && (ooo_cpu[i].ROB.entry[ooo_cpu[i].ROB.head].event_cycle + DEADLOCK_CYCLE) <= current_core_cycle[i])
-                print_deadlock(i);
-
-            // check for warmup
-            // warmup complete
-            if ((warmup_complete[i] == 0) && (ooo_cpu[i].num_retired > warmup_instructions)) {
-                warmup_complete[i] = 1;
-                all_warmup_complete++;
-            }
-            if (all_warmup_complete == NUM_CPUS) { // this part is called only once when all cores are warmed up
-                all_warmup_complete++;
-                finish_warmup();
-            }
-
-            /*
-            if (all_warmup_complete == 0) { 
-                all_warmup_complete = 1;
-                finish_warmup();
-            }
-            if (ooo_cpu[1].num_retired > 0)
-                warmup_complete[1] = 1;
-            */
-            
-            // simulation complete
-            if ((all_warmup_complete > NUM_CPUS) && (simulation_complete[i] == 0) && (ooo_cpu[i].num_retired >= (ooo_cpu[i].begin_sim_instr + ooo_cpu[i].simulation_instructions))) {
-                simulation_complete[i] = 1;
-                ooo_cpu[i].finish_sim_instr = ooo_cpu[i].num_retired - ooo_cpu[i].begin_sim_instr;
-                ooo_cpu[i].finish_sim_cycle = current_core_cycle[i] - ooo_cpu[i].begin_sim_cycle;
-
-                cout << "Finished CPU " << i << " instructions: " << ooo_cpu[i].finish_sim_instr << " cycles: " << ooo_cpu[i].finish_sim_cycle;
-                cout << " cumulative IPC: " << ((float) ooo_cpu[i].finish_sim_instr / ooo_cpu[i].finish_sim_cycle);
-                cout << " (Simulation time: " << elapsed_hour << " hr " << elapsed_minute << " min " << elapsed_second << " sec) " << endl;
-
-                record_roi_stats(i, &ooo_cpu[i].L1D);
-                record_roi_stats(i, &ooo_cpu[i].L1I);
-                record_roi_stats(i, &ooo_cpu[i].L2C);
-                record_roi_stats(i, &uncore.LLC);
-
-                all_simulation_complete++;
-            }
-
-            if (all_simulation_complete == NUM_CPUS)
-                run_simulation = 0;
-        }
-
-        // TODO: should it be backward?
-        uncore.DRAM.operate();
-        uncore.LLC.operate();
+      ooo_cpu[i].last_sim_instr = ooo_cpu[i].num_retired;
+      ooo_cpu[i].last_sim_cycle = current_core_cycle[i];
     }
 
-    uint64_t elapsed_second = (uint64_t)(time(NULL) - start_time),
-             elapsed_minute = elapsed_second / 60,
-             elapsed_hour = elapsed_minute / 60;
-    elapsed_minute -= elapsed_hour*60;
-    elapsed_second -= (elapsed_hour*3600 + elapsed_minute*60);
-    
-    cout << endl << "ChampSim completed all CPUs" << endl;
-    if (NUM_CPUS > 1) {
-        cout << endl << "Total Simulation Statistics (not including warmup)" << endl;
-        for (uint32_t i=0; i<NUM_CPUS; i++) {
-            cout << endl << "CPU " << i << " cumulative IPC: " << (float) (ooo_cpu[i].num_retired - ooo_cpu[i].begin_sim_instr) / (current_core_cycle[i] - ooo_cpu[i].begin_sim_cycle); 
-            cout << " instructions: " << ooo_cpu[i].num_retired - ooo_cpu[i].begin_sim_instr << " cycles: " << current_core_cycle[i] - ooo_cpu[i].begin_sim_cycle << endl;
+    // check for deadlock
+    if (ooo_cpu[i].ROB.entry[ooo_cpu[i].ROB.head].ip && (ooo_cpu[i].ROB.entry[ooo_cpu[i].ROB.head].event_cycle + DEADLOCK_CYCLE) <= current_core_cycle[i])
+      print_deadlock(i);
+
+    // check for warmup
+    // warmup complete
+    if ((warmup_complete[i] == 0) && (ooo_cpu[i].num_retired > warmup_instructions)) {
+      warmup_complete[i] = 1;
+      all_warmup_complete++;
+    }
+    if (all_warmup_complete == NUM_CPUS) { // this part is called only once when all cores are warmed up
+      all_warmup_complete++;
+      finish_warmup();
+    }
+
+    /*
+    if (all_warmup_complete == 0) {
+        all_warmup_complete = 1;
+        finish_warmup();
+    }
+    if (ooo_cpu[1].num_retired > 0)
+        warmup_complete[1] = 1;
+    */
+
+    // simulation complete
+    if ((all_warmup_complete > NUM_CPUS) && (simulation_complete[i] == 0)
+        && (ooo_cpu[i].num_retired >= (ooo_cpu[i].begin_sim_instr + ooo_cpu[i].simulation_instructions))) {
+      simulation_complete[i] = 1;
+      ooo_cpu[i].finish_sim_instr = ooo_cpu[i].num_retired - ooo_cpu[i].begin_sim_instr;
+      ooo_cpu[i].finish_sim_cycle = current_core_cycle[i] - ooo_cpu[i].begin_sim_cycle;
+
+      cout << "Finished CPU " << i << " instructions: " << ooo_cpu[i].finish_sim_instr << " cycles: " << ooo_cpu[i].finish_sim_cycle;
+      cout << " cumulative IPC: " << ((float)ooo_cpu[i].finish_sim_instr / ooo_cpu[i].finish_sim_cycle);
+      cout << " (Simulation time: " << elapsed_hour << " hr " << elapsed_minute << " min " << elapsed_second << " sec) " << endl;
+
+      record_roi_stats(i, &ooo_cpu[i].L1D);
+      record_roi_stats(i, &ooo_cpu[i].L1I);
+      record_roi_stats(i, &ooo_cpu[i].L2C);
+      record_roi_stats(i, &uncore.LLC);
+
+      all_simulation_complete++;
+    }
+
+    if (all_simulation_complete == NUM_CPUS)
+      run_simulation = 0;
+  }
+
+  // TODO: should it be backward?
+  uncore.DRAM.operate();
+  uncore.LLC.operate();
+}
+
+uint64_t elapsed_second = (uint64_t)(time(NULL) - start_time), elapsed_minute = elapsed_second / 60, elapsed_hour = elapsed_minute / 60;
+elapsed_minute -= elapsed_hour * 60;
+elapsed_second -= (elapsed_hour * 3600 + elapsed_minute * 60);
+
+cout << endl << "ChampSim completed all CPUs" << endl;
+if (NUM_CPUS > 1) {
+  cout << endl << "Total Simulation Statistics (not including warmup)" << endl;
+  for (uint32_t i = 0; i < NUM_CPUS; i++) {
+    cout << endl
+         << "CPU " << i
+         << " cumulative IPC: " << (float)(ooo_cpu[i].num_retired - ooo_cpu[i].begin_sim_instr) / (current_core_cycle[i] - ooo_cpu[i].begin_sim_cycle);
+    cout << " instructions: " << ooo_cpu[i].num_retired - ooo_cpu[i].begin_sim_instr << " cycles: " << current_core_cycle[i] - ooo_cpu[i].begin_sim_cycle
+         << endl;
 #ifndef CRC2_COMPILE
-            print_sim_stats(i, &ooo_cpu[i].L1D);
-            print_sim_stats(i, &ooo_cpu[i].L1I);
-            print_sim_stats(i, &ooo_cpu[i].L2C);
-	    ooo_cpu[i].l1i_prefetcher_final_stats();
-            ooo_cpu[i].L1D.l1d_prefetcher_final_stats();
-	    ooo_cpu[i].L2C.l2c_prefetcher_final_stats();
+    print_sim_stats(i, &ooo_cpu[i].L1D);
+    print_sim_stats(i, &ooo_cpu[i].L1I);
+    print_sim_stats(i, &ooo_cpu[i].L2C);
+    ooo_cpu[i].l1i_prefetcher_final_stats();
+    ooo_cpu[i].L1D.l1d_prefetcher_final_stats();
+    ooo_cpu[i].L2C.l2c_prefetcher_final_stats();
 #endif
-            print_sim_stats(i, &uncore.LLC);
-        }
-        uncore.LLC.llc_prefetcher_final_stats();
-    }
+    print_sim_stats(i, &uncore.LLC);
+  }
+  uncore.LLC.llc_prefetcher_final_stats();
+}
 
-    cout << endl << "Region of Interest Statistics" << endl;
-    for (uint32_t i=0; i<NUM_CPUS; i++) {
-        cout << endl << "CPU " << i << " cumulative IPC: " << ((float) ooo_cpu[i].finish_sim_instr / ooo_cpu[i].finish_sim_cycle); 
-        cout << " instructions: " << ooo_cpu[i].finish_sim_instr << " cycles: " << ooo_cpu[i].finish_sim_cycle << endl;
+cout << endl << "Region of Interest Statistics" << endl;
+for (uint32_t i = 0; i < NUM_CPUS; i++) {
+  cout << endl << "CPU " << i << " cumulative IPC: " << ((float)ooo_cpu[i].finish_sim_instr / ooo_cpu[i].finish_sim_cycle);
+  cout << " instructions: " << ooo_cpu[i].finish_sim_instr << " cycles: " << ooo_cpu[i].finish_sim_cycle << endl;
 #ifndef CRC2_COMPILE
-        print_roi_stats(i, &ooo_cpu[i].L1D);
-        print_roi_stats(i, &ooo_cpu[i].L1I);
-        print_roi_stats(i, &ooo_cpu[i].L2C);
+  print_roi_stats(i, &ooo_cpu[i].L1D);
+  print_roi_stats(i, &ooo_cpu[i].L1I);
+  print_roi_stats(i, &ooo_cpu[i].L2C);
 #endif
-        print_roi_stats(i, &uncore.LLC);
-        cout << "Major fault: " << major_fault[i] << " Minor fault: " << minor_fault[i] << endl;
-    }
+  print_roi_stats(i, &uncore.LLC);
+  cout << "Major fault: " << major_fault[i] << " Minor fault: " << minor_fault[i] << endl;
+}
 
-    for (uint32_t i=0; i<NUM_CPUS; i++) {
-        ooo_cpu[i].l1i_prefetcher_final_stats();
-        ooo_cpu[i].L1D.l1d_prefetcher_final_stats();
-        ooo_cpu[i].L2C.l2c_prefetcher_final_stats();
-    }
+for (uint32_t i = 0; i < NUM_CPUS; i++) {
+  ooo_cpu[i].l1i_prefetcher_final_stats();
+  ooo_cpu[i].L1D.l1d_prefetcher_final_stats();
+  ooo_cpu[i].L2C.l2c_prefetcher_final_stats();
+}
 
-    uncore.LLC.llc_prefetcher_final_stats();
+uncore.LLC.llc_prefetcher_final_stats();
 =======
   for (auto it = caches.rbegin(); it != caches.rend(); ++it)
     (*it)->impl_replacement_final_stats();
 >>>>>>> 29f568cfe2a6067b3a125d63742e37be0622d626
 
-#ifndef CRC2_COMPILE
-  print_dram_stats();
-  print_branch_stats();
+#ifndef CRC2_COMPILE print_dram_stats();
+print_branch_stats();
 #endif
 
-  return 0;
+return 0;
 }

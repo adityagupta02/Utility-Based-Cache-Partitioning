@@ -53,13 +53,14 @@ public:
   uint64_t total_miss_latency = 0;
 
 <<<<<<< HEAD
-class CACHE : public MEMORY {
+  class CACHE : public MEMORY
+  {
   public:
     uint32_t cpu;
     const string NAME;
     const uint32_t NUM_SET, NUM_WAY, NUM_LINE, WQ_SIZE, RQ_SIZE, PQ_SIZE, MSHR_SIZE;
     uint32_t LATENCY;
-    BLOCK **block;
+    BLOCK** block;
     int fill_level;
     uint32_t MAX_READ, MAX_FILL;
     uint32_t reads_available_this_cycle;
@@ -72,121 +73,103 @@ class CACHE : public MEMORY {
   int add_pq(PACKET* packet) override;
 >>>>>>> 29f568cfe2a6067b3a125d63742e37be0622d626
 
-  void return_data(PACKET* packet) override;
-  void operate() override;
-  void operate_writes();
-  void operate_reads();
+    void return_data(PACKET* packet) override;
+    void operate() override;
+    void operate_writes();
+    void operate_reads();
 
-  uint32_t get_occupancy(uint8_t queue_type, uint64_t address) override;
-  uint32_t get_size(uint8_t queue_type, uint64_t address) override;
+    uint32_t get_occupancy(uint8_t queue_type, uint64_t address) override;
+    uint32_t get_size(uint8_t queue_type, uint64_t address) override;
 
-  uint32_t get_set(uint64_t address);
-  uint32_t get_way(uint64_t address, uint32_t set);
+    uint32_t get_set(uint64_t address);
+    uint32_t get_way(uint64_t address, uint32_t set);
 
-  int invalidate_entry(uint64_t inval_addr);
-  int prefetch_line(uint64_t pf_addr, bool fill_this_level, uint32_t prefetch_metadata);
-  int prefetch_line(uint64_t ip, uint64_t base_addr, uint64_t pf_addr, bool fill_this_level, uint32_t prefetch_metadata); // deprecated
+    int invalidate_entry(uint64_t inval_addr);
+    int prefetch_line(uint64_t pf_addr, bool fill_this_level, uint32_t prefetch_metadata);
+    int prefetch_line(uint64_t ip, uint64_t base_addr, uint64_t pf_addr, bool fill_this_level, uint32_t prefetch_metadata); // deprecated
 
 <<<<<<< HEAD
-        LATENCY = 0;
-        par = 8;    // fixing initial partition to 8 and 8
+    LATENCY = 0;
+    par = 8; // fixing initial partition to 8 and 8
 =======
   void add_mshr(PACKET* packet);
   void va_translate_prefetches();
 >>>>>>> 29f568cfe2a6067b3a125d63742e37be0622d626
 
-  void handle_fill();
-  void handle_writeback();
-  void handle_read();
-  void handle_prefetch();
+    void handle_fill();
+    void handle_writeback();
+    void handle_read();
+    void handle_prefetch();
 
-  void readlike_hit(std::size_t set, std::size_t way, PACKET& handle_pkt);
-  bool readlike_miss(PACKET& handle_pkt);
-  bool filllike_miss(std::size_t set, std::size_t way, PACKET& handle_pkt);
+    void readlike_hit(std::size_t set, std::size_t way, PACKET& handle_pkt);
+    bool readlike_miss(PACKET& handle_pkt);
+    bool filllike_miss(std::size_t set, std::size_t way, PACKET& handle_pkt);
 
-  bool should_activate_prefetcher(int type);
+    bool should_activate_prefetcher(int type);
 
-  void print_deadlock() override;
+    void print_deadlock() override;
 
 #include "cache_modules.inc"
 
-  const repl_t repl_type;
-  const pref_t pref_type;
+    const repl_t repl_type;
+    const pref_t pref_type;
 
 <<<<<<< HEAD
-        pf_requested = 0;
-        pf_issued = 0;
-        pf_useful = 0;
-        pf_useless = 0;
-        pf_fill = 0;
-    };
+    pf_requested = 0;
+    pf_issued = 0;
+    pf_useful = 0;
+    pf_useless = 0;
+    pf_fill = 0;
+  };
 
-    // destructor
-    ~CACHE() {
-        for (uint32_t i=0; i<NUM_SET; i++)
-            delete[] block[i];
-        delete[] block;
-    };
+  // destructor
+  ~CACHE()
+  {
+    for (uint32_t i = 0; i < NUM_SET; i++)
+      delete[] block[i];
+    delete[] block;
+  };
 
-    // functions
-    int  add_rq(PACKET *packet),
-         add_wq(PACKET *packet),
-         add_pq(PACKET *packet);
+  // functions
+  int add_rq(PACKET*packet), add_wq(PACKET*packet), add_pq(PACKET*packet);
 
-    void return_data(PACKET *packet),
-         operate(),
-         increment_WQ_FULL(uint64_t address);
+  void return_data(PACKET*packet), operate(), increment_WQ_FULL(uint64_t address);
 
-    uint32_t get_occupancy(uint8_t queue_type, uint64_t address),
-             get_size(uint8_t queue_type, uint64_t address);
+  uint32_t get_occupancy(uint8_t queue_type, uint64_t address), get_size(uint8_t queue_type, uint64_t address);
 
-    int  check_hit(PACKET *packet),
-         invalidate_entry(uint64_t inval_addr),
-         check_mshr(PACKET *packet),
-         prefetch_line(uint64_t ip, uint64_t base_addr, uint64_t pf_addr, int prefetch_fill_level, uint32_t prefetch_metadata),
-         kpc_prefetch_line(uint64_t base_addr, uint64_t pf_addr, int prefetch_fill_level, int delta, int depth, int signature, int confidence, uint32_t prefetch_metadata);
+  int check_hit(PACKET*packet), invalidate_entry(uint64_t inval_addr), check_mshr(PACKET*packet),
+      prefetch_line(uint64_t ip, uint64_t base_addr, uint64_t pf_addr, int prefetch_fill_level, uint32_t prefetch_metadata),
+      kpc_prefetch_line(uint64_t base_addr, uint64_t pf_addr, int prefetch_fill_level, int delta, int depth, int signature, int confidence,
+                        uint32_t prefetch_metadata);
 
-    void handle_fill(),
-         handle_writeback(),
-         handle_read(),
-         handle_prefetch();
+  void handle_fill(), handle_writeback(), handle_read(), handle_prefetch();
 
-    void add_mshr(PACKET *packet),
-         update_fill_cycle(),
-         llc_initialize_replacement(),
-         update_replacement_state(uint32_t cpu, uint32_t set, uint32_t way, uint64_t full_addr, uint64_t ip, uint64_t victim_addr, uint32_t type, uint8_t hit),
-         llc_update_replacement_state(uint32_t cpu, uint32_t set, uint32_t way, uint64_t full_addr, uint64_t ip, uint64_t victim_addr, uint32_t type, uint8_t hit),
-         lru_update(uint32_t set, uint32_t way),
-         lru_update_llc(uint32_t set, uint32_t way, uint32_t cpu),
-         fill_cache(uint32_t set, uint32_t way, PACKET *packet),
-         replacement_final_stats(),
-         llc_replacement_final_stats(),
-         //prefetcher_initialize(),
-         l1d_prefetcher_initialize(),
-         l2c_prefetcher_initialize(),
-         llc_prefetcher_initialize(),
-         prefetcher_operate(uint64_t addr, uint64_t ip, uint8_t cache_hit, uint8_t type),
-         l1d_prefetcher_operate(uint64_t addr, uint64_t ip, uint8_t cache_hit, uint8_t type),
-         prefetcher_cache_fill(uint64_t addr, uint32_t set, uint32_t way, uint8_t prefetch, uint64_t evicted_addr),
-         l1d_prefetcher_cache_fill(uint64_t addr, uint32_t set, uint32_t way, uint8_t prefetch, uint64_t evicted_addr, uint32_t metadata_in),
-         //prefetcher_final_stats(),
-         l1d_prefetcher_final_stats(),
-         l2c_prefetcher_final_stats(),
-         llc_prefetcher_final_stats();
-    void (*l1i_prefetcher_cache_operate)(uint32_t, uint64_t, uint8_t, uint8_t);
-    void (*l1i_prefetcher_cache_fill)(uint32_t, uint64_t, uint32_t, uint32_t, uint8_t, uint64_t);
+  void add_mshr(PACKET*packet), update_fill_cycle(), llc_initialize_replacement(),
+      update_replacement_state(uint32_t cpu, uint32_t set, uint32_t way, uint64_t full_addr, uint64_t ip, uint64_t victim_addr, uint32_t type, uint8_t hit),
+      llc_update_replacement_state(uint32_t cpu, uint32_t set, uint32_t way, uint64_t full_addr, uint64_t ip, uint64_t victim_addr, uint32_t type, uint8_t hit),
+      lru_update(uint32_t set, uint32_t way), lru_update_llc(uint32_t set, uint32_t way, uint32_t cpu), fill_cache(uint32_t set, uint32_t way, PACKET*packet),
+      replacement_final_stats(), llc_replacement_final_stats(),
+      // prefetcher_initialize(),
+      l1d_prefetcher_initialize(), l2c_prefetcher_initialize(), llc_prefetcher_initialize(),
+      prefetcher_operate(uint64_t addr, uint64_t ip, uint8_t cache_hit, uint8_t type),
+      l1d_prefetcher_operate(uint64_t addr, uint64_t ip, uint8_t cache_hit, uint8_t type),
+      prefetcher_cache_fill(uint64_t addr, uint32_t set, uint32_t way, uint8_t prefetch, uint64_t evicted_addr),
+      l1d_prefetcher_cache_fill(uint64_t addr, uint32_t set, uint32_t way, uint8_t prefetch, uint64_t evicted_addr, uint32_t metadata_in),
+      // prefetcher_final_stats(),
+      l1d_prefetcher_final_stats(), l2c_prefetcher_final_stats(), llc_prefetcher_final_stats();
+  void (*l1i_prefetcher_cache_operate)(uint32_t, uint64_t, uint8_t, uint8_t);
+  void (*l1i_prefetcher_cache_fill)(uint32_t, uint64_t, uint32_t, uint32_t, uint8_t, uint64_t);
 
-    uint32_t l2c_prefetcher_operate(uint64_t addr, uint64_t ip, uint8_t cache_hit, uint8_t type, uint32_t metadata_in),
-         llc_prefetcher_operate(uint64_t addr, uint64_t ip, uint8_t cache_hit, uint8_t type, uint32_t metadata_in),
-         l2c_prefetcher_cache_fill(uint64_t addr, uint32_t set, uint32_t way, uint8_t prefetch, uint64_t evicted_addr, uint32_t metadata_in),
-         llc_prefetcher_cache_fill(uint64_t addr, uint32_t set, uint32_t way, uint8_t prefetch, uint64_t evicted_addr, uint32_t metadata_in);
-    
-    uint32_t get_set(uint64_t address),
-             get_way(uint64_t address, uint32_t set),
-             find_victim(uint32_t cpu, uint64_t instr_id, uint32_t set, const BLOCK *current_set, uint64_t ip, uint64_t full_addr, uint32_t type),
-             llc_find_victim(uint32_t cpu, uint64_t instr_id, uint32_t set, const BLOCK *current_set, uint64_t ip, uint64_t full_addr, uint32_t type),
-             lru_victim(uint32_t cpu, uint64_t instr_id, uint32_t set, const BLOCK *current_set, uint64_t ip, uint64_t full_addr, uint32_t type),
-             lru_victim_llc(uint32_t cpu, uint64_t instr_id, uint32_t set, const BLOCK *current_set, uint64_t ip, uint64_t full_addr, uint32_t type);
+  uint32_t l2c_prefetcher_operate(uint64_t addr, uint64_t ip, uint8_t cache_hit, uint8_t type, uint32_t metadata_in),
+      llc_prefetcher_operate(uint64_t addr, uint64_t ip, uint8_t cache_hit, uint8_t type, uint32_t metadata_in),
+      l2c_prefetcher_cache_fill(uint64_t addr, uint32_t set, uint32_t way, uint8_t prefetch, uint64_t evicted_addr, uint32_t metadata_in),
+      llc_prefetcher_cache_fill(uint64_t addr, uint32_t set, uint32_t way, uint8_t prefetch, uint64_t evicted_addr, uint32_t metadata_in);
+
+  uint32_t get_set(uint64_t address), get_way(uint64_t address, uint32_t set),
+      find_victim(uint32_t cpu, uint64_t instr_id, uint32_t set, const BLOCK*current_set, uint64_t ip, uint64_t full_addr, uint32_t type),
+      llc_find_victim(uint32_t cpu, uint64_t instr_id, uint32_t set, const BLOCK*current_set, uint64_t ip, uint64_t full_addr, uint32_t type),
+      lru_victim(uint32_t cpu, uint64_t instr_id, uint32_t set, const BLOCK*current_set, uint64_t ip, uint64_t full_addr, uint32_t type),
+      lru_victim_llc(uint32_t cpu, uint64_t instr_id, uint32_t set, const BLOCK*current_set, uint64_t ip, uint64_t full_addr, uint32_t type);
 =======
   // constructor
   CACHE(std::string v1, double freq_scale, unsigned fill_level, uint32_t v2, int v3, uint32_t v5, uint32_t v6, uint32_t v7, uint32_t v8, uint32_t hit_lat,
@@ -200,7 +183,5 @@ class CACHE : public MEMORY {
   }
 >>>>>>> 29f568cfe2a6067b3a125d63742e37be0622d626
 };
-
-
 
 #endif
